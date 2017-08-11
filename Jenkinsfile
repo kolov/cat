@@ -12,7 +12,7 @@ node() {
        }
 
 stage( 'Build') {
-  sh 'docker run --name="myjob --rm -t --volumes-from="jenkins" -e GIT_COMMIT -e CI=true -e NPM_CONFIG_CACHE '
+  sh 'docker run --name="myjob" --rm -t --volumes-from="jenkins" -e GIT_COMMIT -e CI=true -e NPM_CONFIG_CACHE '
   + '-e BOWER_STORAGE__PACKAGES -e TNT_ARTIFACTORY_USER -e TNT_ARTIFACTORY_EMAIL -e TNT_ARTIFACTORY_PASSWORD_HASH ' +
   '-w "$WORKSPACE/$PROJECT_DIR" docker.tntdigital.io/tnt/node6:master npm prune'
 
