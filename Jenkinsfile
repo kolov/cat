@@ -12,51 +12,14 @@ node() {
        }
 
 stage( 'Build') {
-  sh 'docker run --name="$JOB_NAME" --rm -t --volumes-from="jenkins" -e GIT_COMMIT -e CI=true -e NPM_CONFIG_CACHE -e BOWER_STORAGE__PACKAGES -e TNT_ARTIFACTORY_USER -e TNT_ARTIFACTORY_EMAIL -e TNT_ARTIFACTORY_PASSWORD_HASH -w "$WORKSPACE/$PROJECT_DIR" "${docker.GetDockerImage()}" npm prune'
-  sh 'docker run --name="$JOB_NAME" --rm -t --volumes-from="jenkins" -e GIT_COMMIT -e CI=true -e NPM_CONFIG_CACHE -e BOWER_STORAGE__PACKAGES -e TNT_ARTIFACTORY_USER -e TNT_ARTIFACTORY_EMAIL -e TNT_ARTIFACTORY_PASSWORD_HASH -w "$WORKSPACE/$PROJECT_DIR" "${docker.GetDockerImage()}" sh -c "npm install --no-spin > /dev/null" '
+  sh 'docker run --name="myjob --rm -t --volumes-from="jenkins" -e GIT_COMMIT -e CI=true -e NPM_CONFIG_CACHE '
+  + '-e BOWER_STORAGE__PACKAGES -e TNT_ARTIFACTORY_USER -e TNT_ARTIFACTORY_EMAIL -e TNT_ARTIFACTORY_PASSWORD_HASH ' +
+  '-w "$WORKSPACE/$PROJECT_DIR" docker.tntdigital.io/tnt/node6:master npm prune'
 
 }
-       stage('Test'){
-
-         env.NODE_ENV = "test"
 
 
-         print "Environment will be : ${env.NODE_ENV}"
 
-         sh 'node -v'
-         sh 'npm prune'
-         sh 'npm install'
-         sh 'npm test'
-
-       }
-
-       stage('Build Docker'){
-
-            sh './dockerBuild.sh'
-       }
-
-       stage('Deploy'){
-
-         echo 'Push to Repo'
-         sh './dockerPushToRepo.sh'
-
-         echo 'ssh to web server and tell it to pull new image'
-         sh 'ssh deploy@xxxxx.xxxxx.com running/xxxxxxx/dockerRun.sh'
-
-       }
-
-       stage('Cleanup'){
-
-         echo 'prune and cleanup'
-         sh 'npm prune'
-         sh 'rm node_modules -rf'
-
-         mail body: 'project build successful',
-                     from: 'xxxx@yyyyy.com',
-                     replyTo: 'xxxx@yyyy.com',
-                     subject: 'project build successful',
-                     to: 'yyyyy@yyyy.com'
-       }
 
 
 
