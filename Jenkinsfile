@@ -11,6 +11,11 @@ node() {
           checkout scm
        }
 
+stage( 'Build') {
+  sh 'docker run --name="\$JOB_NAME" --rm -t --volumes-from="jenkins" -e GIT_COMMIT -e CI=true -e NPM_CONFIG_CACHE -e BOWER_STORAGE__PACKAGES -e TNT_ARTIFACTORY_USER -e TNT_ARTIFACTORY_EMAIL -e TNT_ARTIFACTORY_PASSWORD_HASH -w "\$WORKSPACE/\$PROJECT_DIR" "${docker.GetDockerImage()}" npm prune'
+  sh 'docker run --name="\$JOB_NAME" --rm -t --volumes-from="jenkins" -e GIT_COMMIT -e CI=true -e NPM_CONFIG_CACHE -e BOWER_STORAGE__PACKAGES -e TNT_ARTIFACTORY_USER -e TNT_ARTIFACTORY_EMAIL -e TNT_ARTIFACTORY_PASSWORD_HASH -w "\$WORKSPACE/\$PROJECT_DIR" "${docker.GetDockerImage()}" sh -c "npm install --no-spin > /dev/null" ''
+
+}
        stage('Test'){
 
          env.NODE_ENV = "test"
